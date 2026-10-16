@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>OpenUtau Theme Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="page">
+<header class="banner">
+  <h1>☆ OpenUtau Theme Studio ☆<small>A color editor for OpenUtau themes</small></h1>
+</header>
+<div class="ticker" aria-hidden="true"><span>Choose a color to update the preview · Hover a field to locate it in OpenUtau · Export your theme as YAML</span></div>
+<div class="navbar">
+  <p class="intro">Edit a color and see the result immediately. <b>Hover a field</b> to highlight where OpenUtau uses it, then export your theme as YAML.</p>
+  <div class="top-actions">
+    <button class="btn" id="btn-site-theme" type="button" aria-label="Switch site theme">☾ Dark</button>
+    <button class="btn" id="btn-import-toggle" type="button">Import YAML</button>
+    <button class="btn primary" id="btn-copy-top" type="button">Copy YAML</button>
+  </div>
+</div>
+
+<main class="layout">
+  <section class="rail" aria-label="Theme colors">
+    <div class="card">
+      <div class="tbar"><span>Theme settings</span><span class="x" aria-hidden="true">?</span></div>
+      <div class="meta">
+      <div>
+        <label for="theme-name">Theme name</label>
+        <input type="text" id="theme-name" spellcheck="false" autocomplete="off">
+      </div>
+      <div class="row-inline">
+        <label class="sw-toggle"><input type="checkbox" id="is-dark"> Dark mode <code>is_dark_mode</code></label>
+      </div>
+      <div>
+        <label>Start from</label>
+        <div class="presets" id="presets" style="margin-top:4px"></div>
+      </div>
+      </div>
+    </div>
+    <div id="groups" style="display:flex;flex-direction:column;gap:12px"></div>
+  </section>
+
+  <section class="stage" aria-label="Preview">
+    <div class="viewer">
+    <div class="tabs" role="tablist">
+      <div class="tl">
+        <button class="tab" role="tab" id="tab-roll" aria-selected="true" type="button">Piano roll</button>
+        <button class="tab" role="tab" id="tab-ctl" aria-selected="false" type="button">Controls and tracks</button>
+      </div>
+      <span class="hint">Live preview · hover a field to locate its color</span>
+    </div>
+
+    <div class="frame"><div class="frame-scroll">
+      <div class="ou" id="ou">
+        <div class="ou-title"><b data-k="ForegroundColor">OpenUtau – Untitled.ustx</b><span class="ou-dots">— ☐ ✕</span></div>
+        <div class="ou-menu" data-k="BackgroundColor">
+          <span data-k="ForegroundColor">File</span><span class="open" id="menu-edit" data-k="BackgroundColorPointerOver ForegroundColorPointerOver">Edit</span><span>View</span><span>Project</span><span>Tools</span><span>Help</span>
+          <div class="ou-flyout" id="flyout" data-k="BorderColor BackgroundColor">
+            <div>Undo <small>Ctrl+Z</small></div>
+            <div class="dis" data-k="BackgroundColorDisabled ForegroundColorDisabled">Redo <small>Ctrl+Y</small></div>
+            <hr>
+            <div class="hov" data-k="BackgroundColorPointerOver ForegroundColorPointerOver">Select all <small>Ctrl+A</small></div>
+            <div>Lyrics… <small>Ctrl+L</small></div>
+          </div>
+        </div>
+
+        <div id="view-roll">
+          <div class="ou-tools">
+            <span class="ou-tool on" title="Select" data-k="SystemAccentColor">⬚</span>
+            <span class="ou-tool" title="Pen" data-k="ForegroundColorPressed">✎</span>
+            <span class="ou-tool" title="Eraser">⌫</span>
+            <span class="ou-tool" title="Knife">✂</span>
+            <span class="ou-sep" data-k="BorderColor"></span>
+            <span class="ou-combo" data-k="BorderColor BackgroundColorPointerOver">Snap 1/8</span>
+            <span class="ou-combo">Key C</span>
+            <span class="ou-sep"></span>
+            <span class="ou-tool on" title="Show pitch">∿</span>
+            <span class="ou-tool" title="Show phonemes">♪</span>
+          </div>
+          <div class="roll" id="roll">
+            <div class="corner">4/4</div>
+            <div class="ruler" id="ruler"></div>
+            <div class="keys" id="keys"></div>
+            <div class="grid" id="grid"></div>
+            <div class="phon-l">phon</div>
+            <div class="phon" id="phon"></div>
+            <div class="exp-l"><span class="ou-combo">DYN</span></div>
+            <div class="exp" id="exp"></div>
+          </div>
+          <div class="ou-status" data-k="ForegroundColorDisabled"><span>4 notes · 1 selected</span><span>120.00 BPM · 4/4</span></div>
+        </div>
+
+        <div id="view-ctl" hidden>
+          <div class="ctl">
+            <div>
+              <h4>Buttons · rest / hover / pressed / disabled</h4>
+              <div class="row">
+                <div><div class="ob" data-k="BackgroundColorPointerOver ForegroundColor"><span>Cancel</span></div><div class="lbl">rest</div></div>
+                <div><div class="ob hov" data-k="ForegroundColorPressed ForegroundColorPointerOver"><span>Cancel</span></div><div class="lbl">hover</div></div>
+                <div><div class="ob prs" data-k="ForegroundColorPressed"><span>Cancel</span></div><div class="lbl">pressed</div></div>
+                <div><div class="ob dis" data-k="BackgroundColorDisabled ForegroundColorDisabled"><span>Cancel</span></div><div class="lbl">disabled</div></div>
+              </div>
+            </div>
+            <div>
+              <h4>Accent button · rest / hover / pressed</h4>
+              <div class="row">
+                <div><div class="ob acc" data-k="SystemAccentColor"><span>Save</span></div><div class="lbl">rest</div></div>
+                <div><div class="ob acc hov" data-k="SystemAccentColorLight1"><span>Save</span></div><div class="lbl">hover</div></div>
+                <div><div class="ob acc prs" data-k="SystemAccentColorDark1"><span>Save</span></div><div class="lbl">pressed</div></div>
+              </div>
+            </div>
+            <div class="stack">
+              <h4>Text boxes</h4>
+              <div class="row">
+                <div class="otb" data-k="BorderColor BackgroundColor">ka sa ta na</div>
+                <div class="otb focus" data-k="SystemAccentColor">あ い う|</div>
+              </div>
+              <div class="row">
+                <div class="otb" style="border-color:var(--ou-BorderColorPointerOver)" data-k="BorderColorPointerOver">hovered</div>
+                <div class="otb dis" data-k="BackgroundColorDisabled ForegroundColorDisabled">disabled</div>
+              </div>
+            </div>
+            <div class="stack">
+              <h4>Toggles &amp; checks</h4>
+              <span class="otg on" data-k="SystemAccentColor"><i></i>Use track color</span>
+              <span class="otg" data-k="BorderColor BorderColorPointerOver"><i></i>Lyrics helper</span>
+              <div class="row">
+                <span class="ocb on" data-k="SystemAccentColor"><i>✓</i>Show portrait</span>
+                <span class="ocb" data-k="BorderColor"><i></i>Beta updates</span>
+              </div>
+            </div>
+            <div class="stack">
+              <h4>Dropdown &amp; slider</h4>
+              <span class="ou-combo" style="align-self:flex-start" data-k="BorderColor BackgroundColorPointerOver">Renderer: WORLDLINE-R</span>
+              <div class="olist" data-k="BorderColor">
+                <div>CLASSIC</div>
+                <div class="hov" data-k="BackgroundColorPointerOver">WORLDLINE-R <small>hover</small></div>
+                <div class="sel" data-k="NeutralAccentColor">ENUNU <small>selected</small></div>
+              </div>
+              <div class="oslider" data-k="SystemAccentColor BorderColor"><b></b><i></i></div>
+            </div>
+            <div class="stack">
+              <h4>Singers list</h4>
+              <div class="olist" data-k="BorderColor">
+                <div class="sel" data-k="NeutralAccentColor NeutralAccentColorPointerOver">Adachi Rei<small>selected</small></div>
+                <div>Kasane Teto <small>JA CVVC</small></div>
+                <div class="hov" data-k="BackgroundColorPointerOver">Defoko <small>hover</small></div>
+                <div style="color:var(--ou-ForegroundColorDisabled)" data-k="ForegroundColorDisabled">Missing bank <small>disabled</small></div>
+              </div>
+            </div>
+            <div class="stack full">
+              <h4>Track list</h4>
+              <div>
+                <div class="otrack">
+                  <div class="th sel" data-k="NeutralAccentColor"><b>Vocal 1</b><span style="font-size:10px;opacity:.75">Adachi Rei</span></div>
+                  <div class="tl" data-k="TickLineColor"><div class="part sel" style="left:4%;width:38%" data-k="AccentColor2">Verse</div><div class="part" style="left:46%;width:30%" data-k="AccentColor1">Chorus</div></div>
+                </div>
+                <div class="otrack">
+                  <div class="th lane2" data-k="TrackBackgroundAltColor"><b>Harmony</b><span style="font-size:10px;opacity:.75">Kasane Teto</span></div>
+                  <div class="tl lane2" data-k="TrackBackgroundAltColor"><div class="part" style="left:46%;width:30%" data-k="AccentColor1">Chorus harm.</div></div>
+                </div>
+              </div>
+              <p class="lbl" style="text-align:left;margin:6px 0 0">Newer OpenUtau builds can give each track its own color; parts on those tracks ignore the accent colors.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    </div>
+
+    <div class="card yaml">
+      <div class="yaml-head">
+        <h3 id="yaml-title">theme.yaml</h3>
+        <div class="acts">
+          <button class="btn small" id="btn-reset" type="button">Reset to preset</button>
+          <button class="btn small primary" id="btn-copy" type="button">Copy YAML</button>
+        </div>
+      </div>
+      <pre id="yaml-out" tabindex="0"></pre>
+      <div class="import" id="import" hidden>
+        <label for="import-text" style="font-weight:600">Paste an existing theme</label>
+        <textarea id="import-text" spellcheck="false" placeholder="name: My Theme&#10;is_dark_mode: true&#10;background_color: '#26232C'&#10;…"></textarea>
+        <div class="row-inline">
+          <span class="btn small file-label">Open .yaml file<input type="file" id="import-file" accept=".yaml,.yml,text/yaml,text/plain"></span>
+          <button class="btn small primary" id="btn-import" type="button">Load into editor</button>
+        </div>
+        <div class="msg" id="import-msg" role="status"></div>
+      </div>
+      <div class="help">Save as <code>anything.yaml</code> in OpenUtau's <code>Themes</code> folder (next to <code>Singers</code>), restart, then pick it under Preferences → Appearance. Colors accept <code>#RRGGBB</code>, <code>#AARRGGBB</code> (alpha comes first), or names like <code>Transparent</code>.</div>
+    </div>
+  </section>
+</main>
+<footer class="foot">
+      <span>Not affiliated with the OpenUtau project.</span>
+  </div>
+</footer>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script src="script.js"></script>
+</body>
+</html>
